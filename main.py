@@ -19,4 +19,12 @@ def load_tasks():
             return load(file)
     except (JSONDecodeError, FileNotFoundError):
         return []
-    
+
+def save_tasks(tasks):
+    with open(TASKS_FILE, "w") as file:
+        dump(tasks, file, indent=4)
+
+def nextID(tasks):
+    if not tasks:
+        return 1
+    return max(task["id"] for task in tasks)
