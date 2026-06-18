@@ -3,3 +3,6 @@ from pydantic import BaseModel
 from json import dump, load, JSONDecodeError
 from os import path
 
+app = FastAPI()
+
+TASKS_FILE = "tasks.json"
