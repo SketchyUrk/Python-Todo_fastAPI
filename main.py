@@ -63,3 +63,22 @@ def comepleteTask(taskID: int):
         if task["id"] == taskID:
             task["completed"] = True
             saveTasks(tasks)
+            
+    raise HTTPException(status_code=404,
+                        detail="Task not found")
+
+@app.delete("/tasks/{taskID}")
+def deleteTask(taskID: int):
+    tasks = loadTasks()
+    
+    for task in tasks:
+        if task["id"] == taskID:
+            tasks.remove(task)
+            saveTasks(tasks)
+            
+            return {"message" : "Task deleted"}
+        
+    raise HTTPException(status_code=404, 
+                        detail="Task not found")
+    
+    
