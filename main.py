@@ -10,7 +10,7 @@ TASKS_FILE = "tasks.json"
 class TaskCreate(BaseModel):
     title: str
     
-def load_tasks():
+def loadTasks():
     if not path.exists(TASKS_FILE):
         return []
     
@@ -20,7 +20,7 @@ def load_tasks():
     except (JSONDecodeError, FileNotFoundError):
         return []
 
-def save_tasks(tasks):
+def saveTasks(tasks):
     with open(TASKS_FILE, "w") as file:
         dump(tasks, file, indent=4)
 
@@ -28,3 +28,29 @@ def nextID(tasks):
     if not tasks:
         return 1
     return max(task["id"] for task in tasks)
+
+@app.get("/")
+def root():
+    return {"message":" Todo API is running "}
+
+@app.get("/tasks")
+def listTasks():
+    return loadTasks()
+
+@app.post("/tasks")
+def addTask(taskData : TaskCreate):
+    tasks = loadTasks()
+    
+    task = {
+        "id": nextID(tasks),
+        "title": taskData.title,
+        "completed": False
+    }
+    
+    tasks.append(task)
+    saveTasks(tasks)
+    
+    return {
+        "message": "Task added",
+        "Task": task
+    }
