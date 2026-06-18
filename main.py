@@ -33,7 +33,7 @@ def saveTasks(tasks):
 def nextID(tasks):
     if not tasks:
         return 1
-    return max(task["id"] for task in tasks)
+    return max(task["id"] for task in tasks) + 1
 
 
 @app.get("/")
@@ -73,9 +73,12 @@ def comepleteTask(taskID: int):
         if task["id"] == taskID:
             task["completed"] = True
             saveTasks(tasks)
-            
-    raise HTTPException(status_code=404,
-                        detail="Task not found")
+            return {"message": "Task completed"}
+
+    raise HTTPException(
+    status_code=404,
+    detail="Task not found"
+)
 
 
 @app.delete("/tasks/{taskID}")
