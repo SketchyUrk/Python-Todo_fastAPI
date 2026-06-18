@@ -54,3 +54,12 @@ def addTask(taskData : TaskCreate):
         "message": "Task added",
         "Task": task
     }
+    
+@app.put("/tasks/{taskID}/complete")
+def comepleteTask(taskID: int):
+    tasks = loadTasks()
+    
+    for task in tasks:
+        if task["id"] == taskID:
+            task["completed"] = True
+            saveTasks(tasks)
