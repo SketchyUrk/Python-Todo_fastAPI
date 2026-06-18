@@ -3,13 +3,17 @@ from pydantic import BaseModel
 from json import dump, load, JSONDecodeError
 from os import path
 
+
 app = FastAPI()
 
+
 TASKS_FILE = "tasks.json"
+
 
 class TaskCreate(BaseModel):
     title: str
     
+
 def loadTasks():
     if not path.exists(TASKS_FILE):
         return []
@@ -20,22 +24,27 @@ def loadTasks():
     except (JSONDecodeError, FileNotFoundError):
         return []
 
+
 def saveTasks(tasks):
     with open(TASKS_FILE, "w") as file:
         dump(tasks, file, indent=4)
+
 
 def nextID(tasks):
     if not tasks:
         return 1
     return max(task["id"] for task in tasks)
 
+
 @app.get("/")
 def root():
     return {"message":" Todo API is running "}
 
+
 @app.get("/tasks")
 def listTasks():
     return loadTasks()
+
 
 @app.post("/tasks")
 def addTask(taskData : TaskCreate):
@@ -55,6 +64,7 @@ def addTask(taskData : TaskCreate):
         "Task": task
     }
     
+
 @app.put("/tasks/{taskID}/complete")
 def comepleteTask(taskID: int):
     tasks = loadTasks()
@@ -66,6 +76,7 @@ def comepleteTask(taskID: int):
             
     raise HTTPException(status_code=404,
                         detail="Task not found")
+
 
 @app.delete("/tasks/{taskID}")
 def deleteTask(taskID: int):
@@ -80,5 +91,3 @@ def deleteTask(taskID: int):
         
     raise HTTPException(status_code=404, 
                         detail="Task not found")
-    
-    
